@@ -1,0 +1,43 @@
+
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: container_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: EcommerceTech
+    ports:
+    -  "3306:3306"
+    volumes:
+    -  mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: container_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+     -  "8080:80"
+    depends_on:
+     - mysql
+  
+  php:
+    build: .
+    container_name: container_php
+    restart: always
+    volumes:
+     - ./projet:/var/www/html
+    ports:
+     - "8000:80"
+    depends_on:
+     - mysql
+
+volumes:
+  mysql_data:
+
+
