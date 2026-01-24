@@ -19,7 +19,7 @@ class Categorie {
 
 
     public function create(){
-        $sql = "INSERT INTO categoties (name) values(:name)";
+        $sql = "INSERT INTO categories (name) values(:name)";
         $stmt = Database::connect()->prepare($sql);
         return $stmt->execute([":name" => $this->name]);
     }
@@ -36,8 +36,9 @@ class Categorie {
         $sql = "SELECT * FROM categories";
         $stmt = Database::connect()->prepare($sql);
         $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
 
-        return $stmt->fetchAll(PDO::FETCH_CLASS, self::class);
+        return $stmt->fetchAll();
     }
 
     public function update():bool{
@@ -53,5 +54,14 @@ class Categorie {
         $sql = "DELETE from categories where id = :id";
         $stmt= Database::connect()->prepare($sql);
         return $stmt->execute([':id'=>$this->id]); 
+    }
+
+    public function getTotalProduits():int{
+        $sql = "SELECT COUNT(*) FROM produits where id_categorie = :id_categorie";
+        $stmt = Database::connect()->prepare($sql);
+
+        $stmt->execute([':id_categorie' => $this->id]);
+
+        return (int) $stmt->fetchColumn();
     }
 }

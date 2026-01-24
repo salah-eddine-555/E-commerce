@@ -11,7 +11,9 @@ class Produit {
     private string $prix;
     private ?string $image;
 
-    private Categorie $categorie;
+    private ?Categorie $categorie = null;
+    private int $id_categorie;
+    
 
     public function getId():int {return $this->id;}
     public function getName():string {return $this->name;}
@@ -49,7 +51,7 @@ class Produit {
         return $stmt->fetch();
     }
 
-    public function getAllProduits():array {
+    public static function getAllProduits():array {
         $sql = "SELECT * FROM produits";
         $stmt = Database::connect()->prepare($sql);
         $stmt->execute();

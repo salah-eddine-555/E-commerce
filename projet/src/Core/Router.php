@@ -40,7 +40,7 @@ class Router {
         $controller = '\App\Controllers\\' .$response['controller'];
     //    var_dump($controller);
         $controller = new $controller();
-        
+            // var_dump($controller);
 
         return call_user_func(array($controller, $response['method']));
     }

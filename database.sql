@@ -50,5 +50,6 @@ ADD COLUMN image VARCHAR(255)NOT NULL AFTER prix;
 
 select * from produits;
 
-delete from users;
-select * from users;
+
+select * from produits;
+delete  from produits;
