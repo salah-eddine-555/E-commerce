@@ -58,4 +58,21 @@ class ProduitController extends Controller {
 
         }
     }
+
+
+    public function delete(){
+
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: /index.php/produit/index");
+            exit;
+        }
+        $produit = new Produit();
+        $produit->setId($_POST['id']);
+        $produit->supprimerProduit();
+    
+        // Redirection après suppression
+        header("Location: /index.php/produit/index");
+        exit;
+    }
 }

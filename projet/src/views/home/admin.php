@@ -189,13 +189,20 @@
                     <span class="product-price"><?= htmlspecialchars($produit->getPrix()); ?>€</span>
                     <div class="card-actions">
                         <!-- Bouton Modifier, ouvre modal -->
-                        <button class="btn-icon btn-edit" onclick="openModal('modalProduit', <?= $produit->getId(); ?>)" title="Modifier">
+                        <button class="btn-icon btn-edit" onclick="openModal('modalProduitModifier', <?= $produit->getId(); ?>)" title="Modifier">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                         <!-- Bouton Supprimer -->
-                        <button class="btn-icon btn-delete" onclick="deleteProduit(<?= $produit->getId(); ?>)" title="Supprimer">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                        <form action="/index.php/produit/delete" 
+                            method="POST" 
+                            style="display:inline;"
+                            onsubmit="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
+                            <input type="hidden" name="id" value="<?= $produit->getId(); ?>">
+
+                            <button type="submit" class="btn-icon btn-delete" title="Supprimer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -246,6 +253,85 @@
     </div>
 </div>
 
+<div id="modalProduitModifier<?= $produit->getId(); ?>" class="modal">
+    <div class="modal-content" style="width: 600px;">
+        <div class="modal-header">
+            <h3>Modifier Produit</h3>
+            <i class="fa-solid fa-xmark"
+               style="cursor:pointer"
+               onclick="closeModal('modalProduitModifier<?= $produit->getId(); ?>')"></i>
+        </div>
+
+        <form action="/index.php/produit/update"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <!-- ID PRODUIT -->
+            <input type="hidden" name="id" value="<?= $produit->getId(); ?>">
+
+            <div class="form-group">
+                <label>Nom du produit</label>
+                <input type="text"
+                       name="name"
+                       value="<?= htmlspecialchars($produit->getName()); ?>"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3"><?= htmlspecialchars($produit->getDescription()); ?></textarea>
+            </div>
+
+            <div style="display:flex; gap:15px">
+                <div class="form-group" style="flex:1">
+                    <label>Prix (€)</label>
+                    <input type="number"
+                           name="prix"
+                           step="0.01"
+                           value="<?= $produit->getPrix(); ?>"
+                           required>
+                </div>
+
+                <div class="form-group" style="flex:1">
+                    <label>Catégorie</label>
+                    <select name="categorie_id" required>
+                        <?php foreach ($categories as $categorie): ?>
+                            <option value="<?= $categorie->getId(); ?>"
+                                <?= $categorie->getId() == $produit->getCategorie()->getId() ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($categorie->getName()); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Image actuelle -->
+            <?php if ($produit->getImage()): ?>
+                <div class="form-group">
+                    <label>Image actuelle</label><br>
+                    <img src="/public/<?= $produit->getImage(); ?>"
+                         style="max-width:120px; border-radius:8px;">
+                </div>
+            <?php endif; ?>
+
+            <div class="form-group">
+                <label>Nouvelle image (optionnelle)</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button"
+                        class="btn btn-cancel"
+                        onclick="closeModal('modalProduitModifier<?= $produit->getId(); ?>')">
+                    Annuler
+                </button>
+                <button type="submit" class="btn btn-add">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 <script>
     function openModal(id) {
         document.getElementById(id).style.display = 'block';
