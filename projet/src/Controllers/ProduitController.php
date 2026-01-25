@@ -61,8 +61,6 @@ class ProduitController extends Controller {
 
 
     public function delete(){
-
-        
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /index.php/produit/index");
             exit;
@@ -74,5 +72,48 @@ class ProduitController extends Controller {
         // Redirection après suppression
         header("Location: /index.php/produit/index");
         exit;
+    }
+
+    public function update(){
+        if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+            header("location: /index.php/produit/index");
+            exit;
+        }
+        $produit = new Produit();
+        $produit->setId($_POST['id']);
+        $produit->setName($_POST['name']);
+        $produit->setDescription($_POST['description']);
+        $produit->setPrix($_POST['prix']);
+
+        $categorie = new Categorie();
+        $categorie->setId((int) $_POST['categorie_id']);
+      
+        $produit->setCategorie($categorie);
+
+       
+
+        $imagepath = null;
+        if(isset($_FILES['image']) && $_FILES['image']['error']=== 0){
+
+            $uploadfile = __DIR__.'/../../public/images/uploads/';
+            if(!is_dir($uploadfile)){
+                mkdir($uploadfile , 0755, true);
+            }
+            $filename = time().'_'.basename($_FILES['image']['name']);
+            $targetPath = $uploadfile . $filename;
+
+            if(move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)){
+                $imagepath = '/public/images/uploads/'. $filename;
+            }
+
+        }
+        $produit->setImage($imagepath);
+        $produit->updateProduit();
+
+        header("location: /index.php/produit/index");
+        exit;
+
+        
+
     }
 }

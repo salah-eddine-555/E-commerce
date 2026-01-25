@@ -1,16 +1,20 @@
 <?php
  namespace App\Controllers;
 use App\Core\Controller;
-
 use App\Models\User;
+use App\Models\Categorie;
+use App\Models\Produit;
+
 use App\Middleware\AuthMiddleware;
 
 class AuthController extends Controller {
 
 
         public function index(){
+            $produits =  Produit::getAllProduits();
+            $categories = Categorie::getAllCategories();
 
-        $this->view('index');
+             $this->view('index', ['produit'=>$produits, 'categorie'=>$categories]);
         }
         public function register(){
         

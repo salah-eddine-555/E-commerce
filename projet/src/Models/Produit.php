@@ -52,7 +52,11 @@ class Produit {
     }
 
     public static function getAllProduits():array {
-        $sql = "SELECT * FROM produits";
+        $sql = "SELECT p.id, p.name, p.description, p.prix, p.image,
+        c.id as id_categorie, c.name as name
+        FROM produits p
+        JOIN categories c ON p.id_categorie = c.id";
+
         $stmt = Database::connect()->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_CLASS, self::class);
